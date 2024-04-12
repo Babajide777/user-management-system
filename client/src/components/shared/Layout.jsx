@@ -16,7 +16,6 @@ const styles = {
   mainContianer: {
     width: "100%",
     maxWidth: "100%",
-    display: "flex",
     boxSizing: "border-box",
     padding: 0,
     margin: 0,
