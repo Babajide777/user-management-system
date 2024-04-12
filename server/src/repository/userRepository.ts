@@ -35,4 +35,16 @@ export class UserRepository {
       new: true,
     });
   }
+
+  async getUserUsingRefreshToken(
+    refreshToken: string
+  ): Promise<Document<unknown, {}, IUser> | null> {
+    return await User.findOne({ refreshToken, deleted: false });
+  }
+
+  async getUserUsingIDWithOutPassword(
+    id: string
+  ): Promise<Document<unknown, {}, IUser> | null> {
+    return await User.findOne({ _id: id, deleted: false }).select("-password");
+  }
 }

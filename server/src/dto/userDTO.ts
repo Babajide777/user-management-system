@@ -36,3 +36,24 @@ export const validateEditUser = z.object({
 });
 
 export type EditUserDTO = z.infer<typeof validateEditUser>;
+
+export const validateLoginUser = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
+});
+
+export type LoginUserDTO = z.infer<typeof validateLoginUser>;
+
+export const validateCreateUser = z.object({
+  firstName: z.string(),
+  lastName: z.string(),
+  email: z.string().email(),
+  broughtBy: ObjectIdSchema,
+  supervisor: ObjectIdSchema,
+  street: z.string(),
+  city: z.string(),
+  iban: z.number().int().gte(1000000000).lte(9999999999),
+  password: z.string().min(8),
+});
+
+export type CreateUserDTO = z.infer<typeof validateCreateUser>;

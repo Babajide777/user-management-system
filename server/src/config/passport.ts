@@ -1,7 +1,7 @@
 import passport from "passport";
 import { Strategy as JWTStrategy, ExtractJwt } from "passport-jwt";
 import { User } from "../entity/User";
-import { jwtSecret } from "./env";
+import { JWT_SECRET } from "./env";
 
 export interface JwtPayload {
   id: string;
@@ -11,7 +11,7 @@ passport.use(
   new JWTStrategy(
     {
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: jwtSecret as string,
+      secretOrKey: JWT_SECRET as string,
     },
     (jwtPayload: JwtPayload, done) => {
       let user: any = User.findById(jwtPayload.id);
