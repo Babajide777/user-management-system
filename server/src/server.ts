@@ -3,12 +3,16 @@ import morgan from "morgan";
 import { connectDB } from "./config/db";
 import userRoute from "./routes/userRoutes";
 import authRoute from "./routes/authRoute";
+import cookieParser from "cookie-parser";
+import passport from "./config/passport";
 
 const app: Application = express();
 
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(passport.initialize());
 
 app.get("/", (req: Request, res: Response) => {
   res.send("User Management Server running ");
