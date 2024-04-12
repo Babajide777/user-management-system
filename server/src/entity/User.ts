@@ -28,6 +28,9 @@ const userSchema = new mongoose.Schema(
       type: Schema.Types.ObjectId,
       ref: "User",
     },
+    broughtByID: {
+      type: Number,
+    },
     supervisor: {
       type: Schema.Types.ObjectId,
       ref: "User",
@@ -83,6 +86,31 @@ const userSchema = new mongoose.Schema(
 );
 
 userSchema.plugin(AutoIncrement, { inc_field: "ID" });
+
+userSchema.post("save", async function (doc, next) {
+  if (doc.broughtByID) {
+    if (
+      (doc.ID == 5 && doc.broughtByID == 2) ||
+      (doc.ID == 2 && doc.broughtByID == 1) ||
+      doc.ID == 5
+    ) {
+      let level2Update = await User.findOne(
+        { ID: 1, deleted: false },
+        { new: true }
+      );
+      if (!level2Update) {
+        return next();
+      }
+      doc.updateOne({
+        levelTwoID: level2Update?.ID,
+        levelTwo: level2Update?._id,
+      });
+      return next();
+    }
+    return next();
+  }
+
+  return next();
+});
 export type IUser = InferSchemaType<typeof userSchema>;
 export const User = mongoose.model<IUser>("User", userSchema);
-// export const User = mongoose.model("User", userSchema);
