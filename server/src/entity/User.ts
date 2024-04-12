@@ -1,7 +1,13 @@
 import mongoose, { Schema, InferSchemaType } from "mongoose";
+import AutoIncrement from "mongoose-sequence";
 
 const userSchema = new Schema(
   {
+    ID: {
+      type: Number,
+      required: true,
+      unique: true,
+    },
     firstName: {
       type: String,
       required: [true, "First name is required"],
@@ -26,10 +32,21 @@ const userSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "User",
     },
+    superviserID: {
+      type: Number,
+    },
     levelTwo: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+    levelTwoID: {
       type: Number,
     },
     levelThree: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+    levelThreeID: {
       type: Number,
     },
     superCommision: {
@@ -38,13 +55,16 @@ const userSchema = new Schema(
     street: {
       type: String,
       trim: true,
+      required: true,
     },
     city: {
       type: String,
       trim: true,
+      required: true,
     },
     iban: {
       type: Number,
+      required: true,
     },
     password: {
       type: String,
@@ -61,5 +81,6 @@ const userSchema = new Schema(
   { timestamps: true }
 );
 
+userSchema.plugin(AutoIncrement, { inc_field: "ID" });
 export type IUser = InferSchemaType<typeof userSchema>;
 export const User = mongoose.model("User", userSchema);
