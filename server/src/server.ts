@@ -28,8 +28,8 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 //routes
-app.use("/api/user/", userRoute);
-app.use("/api/auth/", authRoute);
+app.use("/api/user", userRoute);
+app.use("/api/auth", authRoute);
 
 app.all("*", (req: Request, res: Response, next) => {
   res.status(404).json({

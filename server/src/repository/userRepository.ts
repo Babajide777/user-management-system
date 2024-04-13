@@ -70,4 +70,13 @@ export class UserRepository {
   ): Promise<Document<unknown, {}, IUser> | null> {
     return await User.findOne({ _id: id, deleted: false }).select("-password");
   }
+
+  async editUserUsingMongoDBID(
+    id: string,
+    item: object
+  ): Promise<Document<unknown, {}, IUser> | null> {
+    return await User.findOneAndUpdate({ _id: id, deleted: false }, item, {
+      new: true,
+    });
+  }
 }

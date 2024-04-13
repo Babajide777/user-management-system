@@ -13,15 +13,15 @@ router.post("/sign-up", (req, res, next) =>
   authController.signUpUser(req, res, next)
 );
 router.get(
-  "refresh",
+  "/refresh",
   passport.authenticate("jwt", { session: false }),
   (req, res, next) => authController.refresh(req, res, next)
 );
 router.get(
-  "logout",
+  "/logout",
   passport.authenticate("jwt", { session: false }),
   (req, res, next) => authController.logout(req, res, next)
 );
-router.post("login", (req, res, next) => authController.login(req, res, next));
+router.post("/login", (req, res, next) => authController.login(req, res, next));
 
 export default router;

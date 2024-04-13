@@ -37,7 +37,7 @@ export class AuthService {
     console.log({ accessToken });
     console.log({ refreshToken });
 
-    let editUser = await this._userRepository.editUserUsingId(user.userID, {
+    let editUser = await this._userRepository.editUserUsingMongoDBID(user.id, {
       refreshToken,
     });
 
@@ -137,12 +137,15 @@ export class AuthService {
 
     if (!passwordCheck) throw new Error("Wrong Email or password");
 
-    let accessToken = createAccessToken(checkUser._id);
-    let refreshToken = createRefreshToken(checkUser._id);
+    let accessToken = createAccessToken(checkUser.id);
+    let refreshToken = createRefreshToken(checkUser.id);
 
-    let editUser = await this._userRepository.editUserUsingId(checkUser._id, {
-      refreshToken,
-    });
+    let editUser = await this._userRepository.editUserUsingMongoDBID(
+      checkUser.id,
+      {
+        refreshToken,
+      }
+    );
 
     if (!editUser) throw new Error("Error updating refresh token");
 
