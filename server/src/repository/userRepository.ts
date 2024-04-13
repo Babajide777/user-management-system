@@ -2,17 +2,40 @@ import { Service } from "typedi";
 import { Document } from "mongoose";
 import { AddUserDTO } from "../dto/userDTO";
 import { User, IUser } from "../entity/User";
+import { Counter, ICounter } from "../entity/Counter";
 
 @Service()
 export class UserRepository {
   async saveUser(
     data: AddUserDTO
   ): Promise<[boolean, Document<unknown, {}, IUser> | string]> {
-    let theUser = new User(data);
+    let savedUser = await Counter.findOneAndUpdate(
+      { id: "count" },
+      { $inc: { seq: 1 } },
+      { new: true }
+    ).then((res) => {
+      let seqNum;
 
-    return (await theUser.save())
-      ? [true, theUser]
-      : [false, "Error saving User"];
+      if (res == null) {
+        const newCount = new Counter({
+          id: "count",
+          seq: 1,
+        });
+        newCount.save();
+        seqNum = 1;
+      } else {
+        seqNum = res.seq;
+      }
+
+      let newData = { ...data, userID: seqNum };
+
+      let theUser = new User(newData);
+      theUser.save();
+
+      return theUser;
+    });
+
+    return savedUser ? [true, savedUser] : [false, "Error saving User"];
   }
 
   async getUserUsingEmail(
@@ -22,16 +45,16 @@ export class UserRepository {
   }
 
   async getUserUsingID(
-    ID: number
+    userID: number
   ): Promise<Document<unknown, {}, IUser> | null> {
-    return await User.findOne({ ID, deleted: false });
+    return await User.findOne({ userID, deleted: false });
   }
 
   async editUserUsingId(
-    ID: number,
+    userID: number,
     item: object
   ): Promise<Document<unknown, {}, IUser> | null> {
-    return await User.findOneAndUpdate({ ID, deleted: false }, item, {
+    return await User.findOneAndUpdate({ userID, deleted: false }, item, {
       new: true,
     });
   }

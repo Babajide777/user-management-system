@@ -31,10 +31,13 @@ export class AuthService {
 
     let user: any = savedUser[1];
 
-    let accessToken = createAccessToken(user._id);
-    let refreshToken = createRefreshToken(user._id);
+    let accessToken = createAccessToken(user.id);
+    let refreshToken = createRefreshToken(user.id);
 
-    let editUser = await this._userRepository.editUserUsingId(user._id, {
+    console.log({ accessToken });
+    console.log({ refreshToken });
+
+    let editUser = await this._userRepository.editUserUsingId(user.userID, {
       refreshToken,
     });
 

@@ -9,7 +9,7 @@ const authController = Container.get(AuthController);
 
 //auth
 
-router.post("sign-up", (req, res, next) =>
+router.post("/sign-up", (req, res, next) =>
   authController.signUpUser(req, res, next)
 );
 router.get(

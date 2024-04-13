@@ -12,9 +12,16 @@ const app: Application = express();
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cors({ origin: "*" }));
 app.use(cookieParser());
 app.use(passport.initialize());
+app.use(
+  cors({
+    origin: "*",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    preflightContinue: true,
+    credentials: true,
+  })
+);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("User Management Server running ");
