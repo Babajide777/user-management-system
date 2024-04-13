@@ -8,14 +8,48 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { validateCreateUser } from "../utils/validation";
+import { useState } from "react";
 
 const defaultTheme = createTheme();
 
 export default function SignUp({ setfirst }) {
+  const [err, seterr] = useState([]);
   const handleSubmit = (event) => {
     event.preventDefault();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    seterr("");
     const data = new FormData(event.currentTarget);
-    console.log(data);
+    const objData = Object.fromEntries(data.entries());
+
+    let receivedData = {
+      firstName: objData.firstName,
+      lastName: objData.lastName,
+      email: objData.email,
+      street: objData.street,
+      city: objData.city,
+      iban: Number(objData.iban),
+      password: objData.password,
+    };
+
+    if (objData.broughtBy !== "") {
+      receivedData.broughtBy = objData.broughtBy;
+    }
+
+    if (objData.supervisor !== "") {
+      receivedData.supervisor = objData.supervisor;
+    }
+
+    const check = validateCreateUser.safeParse(receivedData);
+
+    if (!check.success) {
+      const formattedErrors = Object.entries(
+        check.error.flatten().fieldErrors
+      ).map(([fieldName, error]) => {
+        return `${fieldName}: ${error[0]}`;
+      });
+      seterr(formattedErrors);
+    }
   };
 
   return (
@@ -34,6 +68,20 @@ export default function SignUp({ setfirst }) {
           <Typography component="h1" variant="h5">
             Sign up
           </Typography>
+
+          <Box component="span" sx={{ backgroundColor: "gray" }}>
+            {err.map((item, i) => (
+              <Typography
+                key={i}
+                component="h6"
+                color="red"
+                marginBottom="0.5rem"
+              >
+                {item}
+              </Typography>
+            ))}
+          </Box>
+
           <Box
             component="form"
             noValidate
