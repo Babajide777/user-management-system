@@ -1,5 +1,4 @@
 import mongoose, { Schema, InferSchemaType } from "mongoose";
-import AutoIncrement from "mongoose-sequence";
 
 const userSchema = new mongoose.Schema(
   {
@@ -84,8 +83,6 @@ const userSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
-userSchema.plugin(AutoIncrement, { inc_field: "ID" });
 
 userSchema.post("save", async function (doc, next) {
   if (doc.broughtByID) {
