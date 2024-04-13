@@ -1,13 +1,21 @@
 import { Box, Button, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   return (
     <Box component="nav" sx={styles.mainContianer}>
-      <Typography variant="h1" fontSize={40}>
-        User Management System
-      </Typography>
+      <Link to="/">
+        <Typography
+          variant="h1"
+          fontSize={40}
+          sx={{ textDecoration: "none", color: "black" }}
+        >
+          User Management System
+        </Typography>
+      </Link>
+
       <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
         <Typography>Welcome, Babajide</Typography>
         <Button variant="contained">Logout</Button>

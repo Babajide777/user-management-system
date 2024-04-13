@@ -3,24 +3,88 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { useState } from "react";
+import { toast } from "react-toastify";
+import { validateLoginUser } from "../utils/validation";
+import { useLoginMutation } from "../store/Features/auth/authApiSlice";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setCredentials } from "../store/Features/auth/authSlice";
 
 const defaultTheme = createTheme();
 
 export default function Login({ setfirst }) {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+  const [err, seterr] = useState([]);
+  const [LoginTheUser] = useLoginMutation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleSubmit = async (event) => {
+    try {
+      event.preventDefault();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      seterr([]);
+      const data = new FormData(event.currentTarget);
+      const objData = Object.fromEntries(data.entries());
+
+      const check = validateLoginUser.safeParse(objData);
+
+      if (!check.success) {
+        const formattedErrors = Object.entries(
+          check.error.flatten().fieldErrors
+        ).map(([fieldName, error]) => {
+          return `${fieldName}: ${error[0]}`;
+        });
+        seterr(formattedErrors);
+      }
+
+      if (check.success) {
+        const { message, payload } = await LoginTheUser(objData).unwrap();
+
+        dispatch(
+          setCredentials({
+            user: payload.user,
+            token: payload.token,
+          })
+        );
+
+        toast.success(`${message}`, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+
+        setTimeout(() => {
+          navigate("/profile");
+        }, 5000);
+      }
+    } catch (error) {
+      console.log(error);
+      let msg =
+        error.message ||
+        (error.data && error.data.message) ||
+        "An error occurred";
+      toast.error(`${msg}`, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
   };
 
   return (
@@ -35,12 +99,22 @@ export default function Login({ setfirst }) {
             alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-            {/* <LockOutlinedIcon /> */}
-          </Avatar>
+          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}></Avatar>
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
+          <Box component="span" sx={{ backgroundColor: "gray" }}>
+            {err.map((item, i) => (
+              <Typography
+                key={i}
+                component="h6"
+                color="red"
+                marginBottom="0.5rem"
+              >
+                {item}
+              </Typography>
+            ))}
+          </Box>
           <Box
             component="form"
             onSubmit={handleSubmit}
@@ -66,10 +140,6 @@ export default function Login({ setfirst }) {
               type="password"
               id="password"
               autoComplete="current-password"
-            />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
             />
             <Button
               type="submit"

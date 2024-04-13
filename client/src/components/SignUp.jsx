@@ -13,6 +13,8 @@ import { useState } from "react";
 import { useRegisterMutation } from "../store/Features/auth/authApiSlice";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setCredentials } from "../store/Features/auth/authSlice";
 
 const defaultTheme = createTheme();
 
@@ -20,6 +22,7 @@ export default function SignUp({ setfirst }) {
   const [err, seterr] = useState([]);
   const [register] = useRegisterMutation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const handleSubmit = async (event) => {
     try {
       event.preventDefault();
@@ -58,7 +61,14 @@ export default function SignUp({ setfirst }) {
       }
 
       if (check.success) {
-        const { message } = await register(receivedData).unwrap();
+        const { message, payload } = await register(receivedData).unwrap();
+
+        dispatch(
+          setCredentials({
+            user: payload.user,
+            token: payload.token,
+          })
+        );
 
         toast.success(`${message}`, {
           position: "top-right",
