@@ -10,14 +10,16 @@ export const authApiSlice = apiSlice.injectEndpoints({
         body: { ...credentials },
       }),
     }),
-    logout: builder.query({
+    logout: builder.mutation({
       query: () => ({
         url: "auth/logout",
-        method: "GET",
+        method: "POST",
       }),
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
-          const { data } = await queryFulfilled;
+          const { data, meta } = queryFulfilled; // Remove the parentheses from queryFulfilled
+          console.log(data);
+          console.log(meta);
           dispatch(logOut());
           dispatch(apiSlice.util.resetApiState());
         } catch (err) {
@@ -35,4 +37,5 @@ export const authApiSlice = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useLoginMutation, useRegisterMutation } = authApiSlice;
+export const { useLoginMutation, useRegisterMutation, useLogoutMutation } =
+  authApiSlice;

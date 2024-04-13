@@ -1,9 +1,27 @@
 import { Box, Button, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import React from "react";
-import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { useLogoutMutation } from "../../store/Features/auth/authApiSlice";
+import { logOut } from "../../store/Features/auth/authSlice";
 
 const Header = () => {
+  const user = useSelector((state) => state.auth.user);
+  const navigate = useNavigate();
+  const [logout] = useLogoutMutation();
+  const dispatch = useDispatch();
+
+  const handleLogout = async () => {
+    try {
+      await logout().unwrap();
+      // dispatch(logOut);
+      navigate("/");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
   return (
     <Box component="nav" sx={styles.mainContianer}>
       <Link to="/">
@@ -15,11 +33,14 @@ const Header = () => {
           User Management System
         </Typography>
       </Link>
-
-      <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
-        <Typography>Welcome, Babajide</Typography>
-        <Button variant="contained">Logout</Button>
-      </Box>
+      {user.userID && (
+        <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <Typography>Welcome, {user.firstName}</Typography>
+          <Button variant="contained" onClick={handleLogout}>
+            Logout
+          </Button>
+        </Box>
+      )}
     </Box>
   );
 };

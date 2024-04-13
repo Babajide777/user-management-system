@@ -104,7 +104,7 @@ export class AuthService {
       return fail(res, 204, "No user with token was found");
     }
 
-    const updateUser = await this._userRepository.editUserUsingId(
+    const updateUser = await this._userRepository.editUserUsingMongoDBID(
       foundUser.id,
       { refreshToken: "" }
     );

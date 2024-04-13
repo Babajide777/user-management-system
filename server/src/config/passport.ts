@@ -13,9 +13,12 @@ passport.use(
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: JWT_SECRET as string,
     },
-    (jwtPayload: JwtPayload, done) => {
-      let user: any = User.findById(jwtPayload.id);
-      if (jwtPayload.id === user._id) {
+    async (jwtPayload: JwtPayload, done) => {
+      console.log({ jwtPayload });
+      let user: any = await User.findById(jwtPayload.id);
+
+      console.log({ user });
+      if (jwtPayload.id === user.id) {
         return done(null, jwtPayload);
       } else {
         return done(null, false);

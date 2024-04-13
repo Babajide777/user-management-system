@@ -17,7 +17,7 @@ router.get(
   passport.authenticate("jwt", { session: false }),
   (req, res, next) => authController.refresh(req, res, next)
 );
-router.get(
+router.post(
   "/logout",
   passport.authenticate("jwt", { session: false }),
   (req, res, next) => authController.logout(req, res, next)

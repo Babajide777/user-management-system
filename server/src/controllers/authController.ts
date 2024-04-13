@@ -39,6 +39,9 @@ export class AuthController {
       let cookies = req.cookies;
       let user = req.user;
 
+      console.log({ cookies });
+      console.log({ user });
+
       await this._authService.logout(cookies, user, res);
       return success(res, 200, "", "Logout Successfull");
     } catch (error: any) {
