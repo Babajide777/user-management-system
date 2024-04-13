@@ -10,45 +10,87 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { validateCreateUser } from "../utils/validation";
 import { useState } from "react";
+import { useRegisterMutation } from "../store/Features/auth/authApiSlice";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const defaultTheme = createTheme();
 
 export default function SignUp({ setfirst }) {
   const [err, seterr] = useState([]);
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    seterr("");
-    const data = new FormData(event.currentTarget);
-    const objData = Object.fromEntries(data.entries());
+  const [register] = useRegisterMutation();
+  const navigate = useNavigate();
+  const handleSubmit = async (event) => {
+    try {
+      event.preventDefault();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      seterr([]);
+      const data = new FormData(event.currentTarget);
+      const objData = Object.fromEntries(data.entries());
 
-    let receivedData = {
-      firstName: objData.firstName,
-      lastName: objData.lastName,
-      email: objData.email,
-      street: objData.street,
-      city: objData.city,
-      iban: Number(objData.iban),
-      password: objData.password,
-    };
+      let receivedData = {
+        firstName: objData.firstName,
+        lastName: objData.lastName,
+        email: objData.email,
+        street: objData.street,
+        city: objData.city,
+        iban: Number(objData.iban),
+        password: objData.password,
+      };
 
-    if (objData.broughtBy !== "") {
-      receivedData.broughtBy = objData.broughtBy;
-    }
+      if (objData.broughtBy !== "") {
+        receivedData.broughtBy = objData.broughtBy;
+      }
 
-    if (objData.supervisor !== "") {
-      receivedData.supervisor = objData.supervisor;
-    }
+      if (objData.supervisor !== "") {
+        receivedData.supervisor = objData.supervisor;
+      }
 
-    const check = validateCreateUser.safeParse(receivedData);
+      const check = validateCreateUser.safeParse(receivedData);
 
-    if (!check.success) {
-      const formattedErrors = Object.entries(
-        check.error.flatten().fieldErrors
-      ).map(([fieldName, error]) => {
-        return `${fieldName}: ${error[0]}`;
+      if (!check.success) {
+        const formattedErrors = Object.entries(
+          check.error.flatten().fieldErrors
+        ).map(([fieldName, error]) => {
+          return `${fieldName}: ${error[0]}`;
+        });
+        seterr(formattedErrors);
+      }
+
+      if (check.success) {
+        const { message } = await register(receivedData).unwrap();
+
+        toast.success(`${message}`, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+
+        setTimeout(() => {
+          navigate("/profile");
+        }, 5000);
+      }
+    } catch (error) {
+      console.log(error);
+      let msg =
+        error.message ||
+        (error.data && error.data.message) ||
+        "An error occurred";
+      toast.error(`${msg}`, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
       });
-      seterr(formattedErrors);
     }
   };
 

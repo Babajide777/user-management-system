@@ -1,19 +1,19 @@
 import { apiSlice } from "../../api/apiSlice";
-import { logOut, setCredentials } from "./authSlice";
+import { logOut } from "./authSlice";
 
 export const authApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (credentials) => ({
-        url: "student/auth/login",
+        url: "auth/login",
         method: "POST",
         body: { ...credentials },
       }),
     }),
-    logout: builder.mutation({
+    logout: builder.query({
       query: () => ({
-        url: "logout",
-        method: "POST",
+        url: "auth/logout",
+        method: "GET",
       }),
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
@@ -27,21 +27,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
     }),
     register: builder.mutation({
       query: (credentials) => ({
-        url: "student/auth/signup",
-        method: "POST",
-        body: { ...credentials },
-      }),
-    }),
-    registerAdmin: builder.mutation({
-      query: (credentials) => ({
-        url: "admin/auth/signup",
-        method: "POST",
-        body: { ...credentials },
-      }),
-    }),
-    loginAdmin: builder.mutation({
-      query: (credentials) => ({
-        url: "admin/auth/login",
+        url: "auth/sign-up",
         method: "POST",
         body: { ...credentials },
       }),
@@ -49,10 +35,4 @@ export const authApiSlice = apiSlice.injectEndpoints({
   }),
 });
 
-export const {
-  useLoginMutation,
-  useLogoutMutation,
-  useRegisterMutation,
-  useRegisterAdminMutation,
-  useLoginAdminMutation,
-} = authApiSlice;
+export const { useLoginMutation, useRegisterMutation } = authApiSlice;
