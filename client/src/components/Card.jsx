@@ -45,10 +45,12 @@ const Card = ({ firstName, lastName, email, id }) => {
   return (
     <Box sx={styles.mainContianer}>
       <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}></Avatar>
-      <Typography component="p">
+      <Typography component="p" fontSize="0.8rem">
         {firstName} {lastName}
       </Typography>
-      <Typography component="p">{email}</Typography>
+      <Typography component="p" fontSize="0.8rem">
+        {email}
+      </Typography>
       <Box sx={{ display: "flex", gap: "1rem" }}>
         <SvgIcon sx={{ cursor: "pointer" }} onClick={handleDelete}>
           <DeleteIcon sx={{ color: "white" }} />

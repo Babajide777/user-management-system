@@ -15,6 +15,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "../store/Features/auth/authSlice";
+import { Modal } from "@mui/material";
 
 const defaultTheme = createTheme();
 
@@ -63,13 +64,6 @@ export default function EditUser({ setfirst }) {
       if (check.success) {
         const { message, payload } = await register(receivedData).unwrap();
 
-        dispatch(
-          setCredentials({
-            user: payload.user,
-            token: payload.token,
-          })
-        );
-
         toast.success(`${message}`, {
           position: "top-right",
           autoClose: 5000,
@@ -106,7 +100,12 @@ export default function EditUser({ setfirst }) {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Container component="main" maxWidth="xs">
+      <Modal
+        // component="main" maxWidth="xs"
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
         <CssBaseline />
         <Box
           sx={{
@@ -253,7 +252,7 @@ export default function EditUser({ setfirst }) {
             </Grid>
           </Box>
         </Box>
-      </Container>
+      </Modal>
     </ThemeProvider>
   );
 }
