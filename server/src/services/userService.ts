@@ -59,7 +59,7 @@ export class UserService {
     return "User Deleted successfully";
   }
 
-  async getAllQuizCategories() {
-    return await this._quizRepository.getAllQuizCategories();
+  async getAllUsers() {
+    return await this._userRepository.getAllUsers();
   }
 }

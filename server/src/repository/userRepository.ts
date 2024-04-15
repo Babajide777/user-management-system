@@ -95,4 +95,8 @@ export class UserRepository {
       { new: true }
     );
   }
+
+  async getAllUsers(): Promise<Document<unknown, {}, IUser>[]> {
+    return await User.find({ deleted: false });
+  }
 }

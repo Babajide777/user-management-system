@@ -48,15 +48,10 @@ export class UserController {
     }
   }
 
-  async getAllQuizCategories(req: Request, res: Response, next: NextFunction) {
+  async getAllUsers(req: Request, res: Response, next: NextFunction) {
     try {
-      let theQuizCategory = await this._quizService.getAllQuizCategories();
-      return success(
-        res,
-        200,
-        theQuizCategory,
-        "All Quiz Categories retrieved successfully"
-      );
+      let theUsers = await this._userService.getAllUsers();
+      return success(res, 200, theUsers, "All Users retrieved successfully");
     } catch (error: any) {
       let message = isJSON(error.message);
       return fail(res, 400, message);
