@@ -70,6 +70,7 @@ export default function AddUser({ setfirst }) {
           progress: undefined,
           theme: "light",
         });
+        navigate("/profile");
       }
     } catch (error) {
       console.log(error);

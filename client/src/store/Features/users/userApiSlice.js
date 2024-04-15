@@ -9,14 +9,14 @@ export const usersApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getAllUsers: builder.query({
       query: () => ({
-        url: "user/all-users",
+        url: "user/get-all-users",
         method: "GET",
         validateStatus: (response, result) => {
           return response.status === 200 && !result.isError;
         },
       }),
       transformResponse: (responseData) => {
-        const loadedUsers = responseData.map((user) => {
+        const loadedUsers = responseData.payload.map((user) => {
           user.id = user._id;
           return user;
         });
