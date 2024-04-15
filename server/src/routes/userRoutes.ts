@@ -15,11 +15,11 @@ router.put("/edit-user/:id", (req, res, next) =>
   userController.editUser(req, res, next)
 );
 
-router.delete("delete-user/:id", (req, res, next) =>
+router.delete("/delete-user/:id", (req, res, next) =>
   userController.deleteUser(req, res, next)
 );
 
-router.get("get-all-users", (req, res, next) =>
+router.get("/get-all-users", (req, res, next) =>
   userController.getAllUsers(req, res, next)
 );
 
