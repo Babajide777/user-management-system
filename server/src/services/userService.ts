@@ -5,6 +5,8 @@ import {
   validateEditUser,
   AddUserDTO,
   EditUserDTO,
+  IdDTO,
+  validateID,
 } from "../dto/userDTO";
 
 @Service()
@@ -39,5 +41,25 @@ export class UserService {
 
     if (!theUser) throw new Error("Error editing User");
     return theUser;
+  }
+
+  async deleteUser(data: IdDTO) {
+    const check = validateID.safeParse(data);
+    if (!check.success)
+      throw new Error(JSON.stringify(check.error.flatten().fieldErrors));
+
+    const checkUser = await this._userRepository.getUserUsingMongoDBID(data.id);
+    if (!checkUser) throw new Error("User does not exist");
+
+    const theUser = await this._userRepository.deleteUserUsingMongoDbId(
+      data.id
+    );
+
+    if (!theUser) throw new Error("Error deleting User");
+    return "User Deleted successfully";
+  }
+
+  async getAllQuizCategories() {
+    return await this._quizRepository.getAllQuizCategories();
   }
 }

@@ -79,4 +79,20 @@ export class UserRepository {
       new: true,
     });
   }
+
+  async getUserUsingMongoDBID(
+    id: string
+  ): Promise<Document<unknown, {}, IUser> | null> {
+    return await User.findOne({ _id: id, deleted: false });
+  }
+
+  async deleteUserUsingMongoDbId(
+    id: string
+  ): Promise<Document<unknown, {}, IUser> | null> {
+    return await User.findOneAndUpdate(
+      { _id: id, deleted: false },
+      { deleted: true, deletedAt: new Date() },
+      { new: true }
+    );
+  }
 }

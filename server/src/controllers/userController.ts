@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { Service } from "typedi";
 import "reflect-metadata";
 import { UserService } from "../services/userService";
-import { AddUserDTO, EditUserDTO } from "../dto/userDTO";
+import { AddUserDTO, EditUserDTO, IdDTO } from "../dto/userDTO";
 import { fail, success } from "../utils/response";
 import { isJSON } from "../utils/isJSON";
 
@@ -29,6 +29,34 @@ export class UserController {
       };
       let editedUser = await this._userService.editUser(request);
       return success(res, 200, editedUser, "User edited successfully");
+    } catch (error: any) {
+      let message = isJSON(error.message);
+      return fail(res, 400, message);
+    }
+  }
+
+  async deleteUser(req: Request, res: Response, next: NextFunction) {
+    try {
+      let request: IdDTO = {
+        id: req.params.id,
+      };
+      let deletedUser = await this._userService.deleteUser(request);
+      return success(res, 200, "", deletedUser);
+    } catch (error: any) {
+      let message = isJSON(error.message);
+      return fail(res, 400, message);
+    }
+  }
+
+  async getAllQuizCategories(req: Request, res: Response, next: NextFunction) {
+    try {
+      let theQuizCategory = await this._quizService.getAllQuizCategories();
+      return success(
+        res,
+        200,
+        theQuizCategory,
+        "All Quiz Categories retrieved successfully"
+      );
     } catch (error: any) {
       let message = isJSON(error.message);
       return fail(res, 400, message);

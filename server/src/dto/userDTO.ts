@@ -10,6 +10,12 @@ export const ObjectIdSchema = z.string().refine((value) => {
   }
 }, "Valid ObjectId string");
 
+export const validateID = z.object({
+  id: ObjectIdSchema,
+});
+
+export type IdDTO = z.infer<typeof validateID>;
+
 export const validateAddUser = z.object({
   firstName: z.string(),
   lastName: z.string(),
