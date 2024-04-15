@@ -17,9 +17,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
       }),
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
-          const { data, meta } = queryFulfilled; // Remove the parentheses from queryFulfilled
-          console.log(data);
-          console.log(meta);
+          const { data, meta } = queryFulfilled;
           dispatch(logOut());
           dispatch(apiSlice.util.resetApiState());
         } catch (err) {

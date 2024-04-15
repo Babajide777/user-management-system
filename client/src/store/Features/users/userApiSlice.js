@@ -1,58 +1,56 @@
-import { createEntityAdapter, createSelector } from "@reduxjs/toolkit";
+import { createEntityAdapter } from "@reduxjs/toolkit";
 import { apiSlice } from "../../api/apiSlice";
 
-const mapItemAdapter = createEntityAdapter({});
+const usersAdapter = createEntityAdapter({});
 
-const initialState = mapItemAdapter.getInitialState();
+const initialState = usersAdapter.getInitialState();
 
-export const mapItemApiSlice = apiSlice.injectEndpoints({
+export const usersApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getAllMapItems: builder.query({
+    getAllUsers: builder.query({
       query: () => ({
-        url: "all-map-items",
+        url: "user/all-users",
         method: "GET",
         validateStatus: (response, result) => {
           return response.status === 200 && !result.isError;
         },
       }),
       transformResponse: (responseData) => {
-        return mapItemAdapter.setAll(initialState, responseData.data);
+        return usersAdapter.setAll(initialState, responseData.data);
       },
       providesTags: (result, error, arg) => {
         if (result?.ids) {
           return [
-            { type: "mapItems", id: "LIST" },
-            ...result.ids.map((id) => ({ type: "mapItems", id })),
+            { type: "users", id: "LIST" },
+            ...result.ids.map((id) => ({ type: "users", id })),
           ];
-        } else return [{ type: "mapItems", id: "LIST" }];
+        } else return [{ type: "users", id: "LIST" }];
       },
     }),
-    addMapItem: builder.mutation({
+    addUser: builder.mutation({
       query: (credentials) => ({
-        url: "add-map-item",
+        url: "user/add-user",
         method: "POST",
         body: { ...credentials },
         validateStatus: (response, result) => {
           return response.status === 201 && !result.isError;
         },
       }),
-      invalidatesTags: [{ type: "mapItems", id: "LIST" }],
+      invalidatesTags: [{ type: "users", id: "LIST" }],
     }),
-    deleteMapItem: builder.mutation({
+    deleteUser: builder.mutation({
       query: ({ id }) => ({
-        url: `delete-map-item/${id}`,
+        url: `user/delete-user/${id}`,
         method: "DELETE",
         validateStatus: (response, result) => {
           return response.status === 200 && !result.isError;
         },
       }),
-      invalidatesTags: (result, error, arg) => [
-        { type: "mapItems", id: arg.id },
-      ],
+      invalidatesTags: (result, error, arg) => [{ type: "users", id: arg.id }],
     }),
-    editMapItem: builder.mutation({
+    editUsers: builder.mutation({
       query: (data) => ({
-        url: `edit-map-item/${data.id}`,
+        url: `user/edit-user/${data.id}`,
         method: "PUT",
         body: {
           ...data,
@@ -61,32 +59,14 @@ export const mapItemApiSlice = apiSlice.injectEndpoints({
           return response.status === 200 && !result.isError;
         },
       }),
-      invalidatesTags: (result, error, arg) => [
-        { type: "mapItems", id: arg.id },
-      ],
+      invalidatesTags: (result, error, arg) => [{ type: "users", id: arg.id }],
     }),
   }),
 });
 
 export const {
-  useGetAllMapItemsQuery,
-  useAddMapItemMutation,
-  useDeleteMapItemMutation,
-  useEditMapItemMutation,
-} = mapItemApiSlice;
-
-export const selectMapItemsResult =
-  mapItemApiSlice.endpoints.getAllMapItems.select();
-
-const selectMapItemsData = createSelector(
-  selectMapItemsResult,
-  (MapItemsResult) => MapItemsResult.data
-);
-
-export const {
-  selectAll: selectAllMapItemss,
-  selectById: selectMapItemById,
-  selectIds: selecttMapItemIds,
-} = mapItemAdapter.getSelectors(
-  (state) => selectMapItemsData(state) ?? initialState
-);
+  useAddUserMutation,
+  useDeleteUserMutation,
+  useEditUsersMutation,
+  useGetAllUsersQuery,
+} = usersApiSlice;
